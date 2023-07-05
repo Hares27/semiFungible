@@ -1,19 +1,43 @@
-
 // SPDX-License-Identifier: GPL-3.0
 
 
 pragma solidity ^0.8.0;
-import "./Token.sol";
+import "./Fungible.sol";
 
 contract Metadata{
      
-     Token public token;
+     Fungible public token;
 
      constructor(address _tokenAddress){
-         token=Token(_tokenAddress);
+         token=Fungible(_tokenAddress);
      }
 
-     uint public tokensMinted=token.numberOfTokensMinted();
+     function constructContractURI(string memory _imageLink) public view returns(string memory){
+         return(
+             string(abi.encodePacked(
+                 'data:application/json;',
+                                     Base64.encode(
+                        abi.encodePacked(
+                            '{"name":"', 
+                            token.name(),
+                            
+                            '","image":"',
+                            _imageLink,
+                            
+                            
+                            '"}'
+                        )
+                    )
+             ))
+
+         );
+     }
+
+
+      function contractURI(string memory _imageLink) public pure returns (string memory) {
+        string memory json = '{"name": token.name(),"image":_imageLink}';
+        return string.concat("data:application/json;utf8,", json);
+    }
 
      
 
